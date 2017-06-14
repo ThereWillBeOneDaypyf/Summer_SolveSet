@@ -40,7 +40,7 @@ void f()
 }
 bool search(ll res, ll x, ll z)
 {
-	ll l = x + 1, r = k, y;
+	ll l = x + 1, r = 50000, y;
 	while (l <= r)
 	{
 		y = (l + r) / 2;
@@ -65,10 +65,12 @@ int main()
 	while (cin >> k && k)
 	{
 		int ans = 0;
-		for (ll x = 1; x <= sqrt(k) + 1; x++)
+		for (ll x = 1; x <= 50000 && x <= k; x++)
 		{
 			for (ll z = 2; z < 32; z++)
 			{
+				if (mat[x][z] == 0)
+					break;
 				ll res = mat[x][z];
 				if (res > k)
 					break;
