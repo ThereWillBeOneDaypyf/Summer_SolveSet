@@ -95,7 +95,7 @@ int main()
 				most_right[a[cur_update]] = cur_update;
 				update(cur_update, a[cur_update]);
 			}
-			cout << query(Q[i].r) << " " << query(Q[i].l - 1) << " " << ox_sum[Q[i].r] << " " << ox_sum[Q[i].l - 1] << endl;
+			// cout << query(Q[i].r) << " " << query(Q[i].l - 1) << " " << ox_sum[Q[i].r] << " " << ox_sum[Q[i].l - 1] << endl;
 			Q[i].ans = query(Q[i].r) ^ query(Q[i].l - 1) ^ ox_sum[Q[i].r] ^ ox_sum[Q[i].l - 1];
 			map<int, int> :: iterator it;
 			// for (it = most_right.begin(); it != most_right.end(); it++)
