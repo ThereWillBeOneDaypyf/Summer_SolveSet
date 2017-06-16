@@ -21,7 +21,7 @@ using namespace std;
 typedef pair<int, int> PII;
 typedef long long ll;
 
-const int N = 1e6 + 5;
+const int N = 1e6 + 1e5 + 5;
 
 int a[N];
 
