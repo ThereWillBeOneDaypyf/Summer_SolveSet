@@ -1,100 +1,110 @@
-#include<bits/stdc++.h>
+#include<iostream>
+#include<algorithm>
+#include<vector>
+#include<queue>
+#include<vector>
+#include<cmath>
+#include<cstdio>
+#include<cstring>
+#include<string>
+#include<stack>
+#include<map>
+#include<set>
 using namespace std;
 
 //thanks to pyf ...
 //thanks to qhl ...
 
-const int N = 105;
+#define INF 0x3f3f3f3f
+#define CLR(x,y) memset(x,y,sizeof(x))
+#define mp(x,y) make_pair(x,y)
+typedef pair<int, int> PII;
+typedef long long ll;
 
-int n,m;
+const int N = 1e3 + 5;
+
+
+int n, m;
 int Map[N][N];
 
-void del_row(int row)
+void del_row(int row, int val)
 {
-	for(int i = 0;i<m;i++)
+	for (int i = 0; i < m; i++)
 		Map[row][i] --;
 }
-void del_col(int col)
+void del_col(int col, int val)
 {
-	for(int i =0 ;i<n;i++)
+	for (int i = 0; i < n; i++)
 		Map[i][col] --;
 }
-bool judge_row(int row)
+int judge_row(int row)
 {
-	for(int i = 0;i<m;i++)
-		if(!Map[row][i])
-			return false;
-	return true;
+	int Min = INF;
+	for (int i = 0; i < m; i++)
+		if (!Map[row][i])
+			return 0;
+		else
+			Min = min(Min, Map[row][i]);
+	return Min;
 }
-bool judge_col(int col)
+int judge_col(int col)
 {
-	for(int i=0;i<n;i++)
-		if(!Map[i][col])
-			return false;
-	return true;
+	int Min = INF;
+	for (int i = 0; i < n; i++)
+		if (!Map[i][col])
+			return 0;
+		else
+			Min = min(Map[i][col], Min);
+	return Min;
 }
 int main()
 {
-	while(cin >> n >> m)
+	while (cin >> n >> m)
 	{
-		for(int i =0 ;i<n;i++)
+		vector<PII>ans;
+		for (int i = 0; i < n; i++)
 		{
-			for(int j =0 ;j<m;j++)
+			for (int j = 0; j < m; j++)
 			{
 				cin >> Map[i][j];
 			}
 		}
-		int flag = 0;
-		vector<pair<int,int> > ans;
-		for(int i = 0 ; i< n ;i++)
+		int ok = 0;
+		for (int i = 0 ; i < n; i++)
 		{
-			for(int j = 0 ;j<m;j++)
+			for (int j = 0; j < m; j++)
 			{
-				if(Map[i][j])
+				int flag = 0;
+				if (Map[i][j])
 				{
-					if(n < m) // row first
+					int val;
+					while ((val = judge_row(i)))
 					{
-						while(judge_row(i))
-						{
-							del_row(i);
-							ans.push_back(make_pair(0,i+1));
-						}
-						while(judge_col(j))
-						{
-							del_col(j);
-							ans.push_back(make_pair(1,j+1));
-						}
-						if(Map[i][j])
-							flag = 1;
+						flag = 1;
+						del_row(i, val);
+						ans.push_back(mp(0, i + 1));
 					}
-					else // col first
+					while ((val = judge_col(j)))
 					{
-						while(judge_col(j))
-						{
-							del_col(j);
-							ans.push_back(make_pair(1,j+1));
-						}
-						while(judge_row(i))
-						{
-							del_row(i);
-							ans.push_back(make_pair(0,i+1));
-						}
-						if(Map[i][j])
-							flag =  1;
+						flag = 1;
+						del_col(j, val);
+						ans.push_back(mp(1, j + 1));
 					}
+					if (!flag && Map[i][j])
+						ok = -1;
 				}
 			}
 		}
-		if(flag)
+		if (ok == -1)
 			cout << -1 << endl;
 		else
 		{
 			cout << ans.size() << endl;
-			for(int i =0 ;i<ans.size();i++)
+			for (int i = 0; i < ans.size(); i++)
 			{
-				int tar = ans[i].first;
+				int tar = ans[i].first ;
 				int val = ans[i].second;
-				if(tar == 0)
+				if (!tar)
 					cout << "row ";
 				else
 					cout << "col ";
