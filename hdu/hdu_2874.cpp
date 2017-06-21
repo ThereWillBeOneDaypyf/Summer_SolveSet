@@ -113,7 +113,7 @@ int main()
 			add_Q(v,u,i);
 		}
 		solve_lca(n); 
-		for(i =0;i<q;i++)
+		for(i = 0; i < q; i++)
 		{
 			if(ans[i] == -1)
 				printf("Not connected\n");
