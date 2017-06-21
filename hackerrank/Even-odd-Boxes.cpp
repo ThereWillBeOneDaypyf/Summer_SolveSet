@@ -16,65 +16,62 @@ int main()
 	while(T--)
 	{
 		int n;
-		scanf("%d",&n);
-		for(int i =0 ;i<n;i++)
-			scanf("%d",a+i);
-		int evenpos_odd = 0,oddpos_even = 0;
-		int cnt_zero = 0;
+		cin >> n;
+		set<int> evenposzero;
+		set<int> needchange;
 		for(int i = 0;i<n;i++)
 		{
-			if( i % 2 == 0 && a[i] % 2 == 1)
-			{
-				evenpos_odd ++;
-				if(a[i] == 1)
-					cnt_zero ++;
-			}
-			else if( i % 2 == 1 && a[i] % 2 == 0)
-				oddpos_even ++;
+			cin >> a[i];
+			if(i%2 == 0 && a[i] == 1)
+				evenposzero.insert(i);
+			else if(i%2 != a[i] %2)
+				needchange.insert(i);
 		}
+		int ans = 0;	
 		int flag = 1;
-		int ans = min(oddpos_even,evenpos_odd);
-		int ret = max(oddpos_even,evenpos_odd) - min(oddpos_even,evenpos_odd);
-		if(ret % 2)
-			flag = 0;
-		else
+		while(evenposzero.size() && needchange.size())
 		{
-			if(evenpos_odd > oddpos_even)
+			int zero_index = *(evenposzero.begin());
+			int change_index = *(needchange.begin());
+			a[zero_index] ++;
+			a[change_index] --;
+			evenposzero.erase(evenposzero.begin());
+			needchange.erase(needchange.begin());
+			ans ++;
+		}
+		if(evenposzero.size())
+		{
+			int cnt = evenposzero.size();
+			if(cnt % 2 == 0)
 			{
-				evenpos_odd -= oddpos_even;
-				if(evenpos_odd % 2 == 1)
-					flag = 0;
-				if(cnt_zero > oddpos_even)
+				for(int i = n-1 ;i>=0&&cnt>1;i--)
 				{
-					cnt_zero -= oddpos_even;
-					if(cnt_zero > evenpos_odd /2)
+					while(a[i] > 2 && cnt > 1)
 					{
-						int cnt =0 ;
-						for(int i =0 ;i<n;i++)
-						{
-							if(a[i] >= 4)
-								cnt ++ ;
-						}
-						if(cnt > (cnt_zero - evenpos_odd / 2) /2)
-							ans += cnt_zero - evenpos_odd / 2;
+						a[i] -= 2;
+						evenposzero.erase(evenposzero.begin());
+						evenposzero.erase(evenposzero.begin());	
+						ans+=2;
+						cnt-=2;
 					}
-					else
-						ans += evenpos_odd / 2;
-				}
-				else
-				{
-					ans += evenpos_odd /2;
-				}
+				}		
+				if(cnt)
+					flag = 0;
 			}
 			else
-			{
-				ans += (oddpos_even - evenpos_odd) / 2;
-			}
+				flag = 0;
 		}
-		if(!flag)
-			cout << -1 << endl;
 		else
+		{
+			if(needchange.size() % 2)
+				flag = 0;
+			else
+				ans += (needchange.size() / 2);
+		}
+		if(flag)
 			cout << ans << endl;
+		else
+			cout << -1 << endl;
 	}
 }
 
