@@ -10,10 +10,10 @@ typedef long long ll;
 
 ll dfs(ll cur)
 {
-	if(cur == 1)
+	if(cur==1)
 		return 0;
 	else 
-		return dfs(cur/2) + dfs(cur - cur/2) + cur/2 * (cur - cur/2);
+		return dfs(1) + dfs(cur - 1) + cur-1;
 }
 
 int main()
