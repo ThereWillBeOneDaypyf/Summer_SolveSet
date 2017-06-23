@@ -1,49 +1,50 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-
 //thanks to pyf ...
 //thanks to qhl ...
 
-typedef long long LL; 
+const int N = 1e5+5;
+typedef long long ll;
 
-LL e_gcd(LL a,LL b,LL &x,LL &y)  
-{  
-    if(b==0)  
-    {  
-        x=1;  
-        y=0;  
-        return a;  
-    }  
-    LL ans=e_gcd(b,a%b,x,y);  
-    LL temp=x;  
-    x=y;  
-    y=temp-a/b*y;  
-    return ans;  
-} 
-  
-LL cal(LL a,LL b,LL c)  
-{  
-    LL x,y;  
-    LL gcd=e_gcd(a,b,x,y);  
-    if(c%gcd!=0) return -1;  
-    x*=c/gcd;  
-    b/=gcd;  
-    if(b<0) b=-b;  
-    LL ans=x%b;  
-    if(ans<=0) ans+=b;  
-    return ans;  
-}  
+ll dp[N][2];
+int a[N];
 
+ll dfs(int pos,int pre,int sta,bool limit)
+{
+	if(pos == -1)
+		return 1;
+	if(!limit && dp[pos][sta] != -1)
+		return dp[pos][sta];
+	int up = limit ? a[pos] : 1;
+	ll ans = 0;
+	for(int i =0;i<=up;i++)
+	{
+		if(pre == 1 && i == 1)
+			continue;
+		ans += dfs(pos-1,i,i==1,limit&&i==a[pos]);
+	}
+	if(!limit)
+		dp[pos][sta] = ans;
+	return ans;
+}
+ll solve(ll n)
+{
+	memset(dp,-1,sizeof(dp));
+	memset(a,0,sizeof(a));
+	int cnt = 0;
+	while(n)
+	{
+		a[cnt++] = n % 2;
+		n /= 2;
+	}
+	return dfs(cnt-1,-1,0,1);
+}
 int main()
 {
-	LL x,y,m,n,l;
-	while(scanf("%lld%lld%lld%lld%lld",&x,&y,&m,&n,&l)==5)
+	ll n;
+	while(cin >> n)
 	{
-		LL ans = cal(m - n, l,y - x) ;
-		if(ans == -1)
-			printf("Impossible\n");
-		else
-			printf("%lld\n",ans);
+		cout << solve(n) << endl;
 	}
 }
