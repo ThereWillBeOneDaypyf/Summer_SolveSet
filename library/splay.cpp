@@ -1,39 +1,34 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-
+//求区间最大值
 //thanks to pyf ...
 //thanks to qhl ...
 
 #define INF 0x3f3f3f3f
 
-const int N = 1e5 + 7;
+const int N = 200005;
 
-int ch[N][2], sz[N];
+int ch[N][2];
 int fa[N];
 int tot = 0;
 int key[N];
+int v[N];
+int Max[N];
 int root;
-void init()
-{
-	memset(ch, 0, sizeof(ch));
-	memset(sz, 0, sizeof(sz));
-	memset(fa, 0, sizeof(-1));
-	memset(key, 0, sizeof(key));
-	tot = 0;
-	root = tot;
-}
 void push_up(int r)
 {
-	sz[r] = sz[ch[r][0]] + sz[ch[r][1]];
+	Max[r] = max(Max[ch[r][0]],Max[ch[r][1]]);
+	Max[r] = max(Max[r],v[r]);
 }
-void NewNode(int &r, int val, int Fa)
+void NewNode(int &r,int k, int val, int Fa) // 生成一个以Fa为父节点的儿子节点
+											// k为关键字，val为值
 {
-	r = ++tot;
-	ch[r][0] = ch[r][1] = 0;
-	key[r] = val;
+	r = ++ tot;
+	ch[r][0] = ch[r][0] = 0;
+	key[r] = k;
+	Max[r] = v[r] = val;
 	fa[r] = Fa;
-	sz[r] = 1;
 }
 void Rotate(int r, int kind) // left 0 right 1
 {
@@ -45,6 +40,7 @@ void Rotate(int r, int kind) // left 0 right 1
 	fa[r] = fa[y];
 	ch[r][kind] = y;
 	fa[y] = r;
+	push_up(y);
 	push_up(r);
 }
 void splay(int r, int goal)
@@ -75,24 +71,24 @@ void splay(int r, int goal)
 		root = r;
 	push_up(r);
 }
-int insert(int r, int val)
+void insert(int k,int val) //将关键字为k值为val的节点插入splay tree
 {
-	//cout << key[r] << " ";
-	if (val == key[r])
-	{
-		splay(r, 0);
-		return 1;
-	}
-	if (ch[r][key[r] < val] == 0)
-	{
-		NewNode(ch[r][key[r] < val], val, r);
-		splay(ch[r][key[r] < val], 0);
-		return 0;
-	}
-	else return insert(ch[r][key[r] < val], val);
-	push_up(r);
+	int r = root;
+	while(ch[r][ k > key[r]])
+		r = ch[r][k > key[r]];
+	NewNode(ch[r][k>key[r]],k,val,r);
+	splay(ch[r][k>key[r]],0);
 }
-int get_pre(int r)
+int key_to_Index(int k) // 将splay 的关键字换成下标
+{
+	int r = root;
+	while(key[r] != k)
+	{
+		r = ch[r][ k > key[r]];
+	}
+	return r;
+}
+int get_pre(int r) // 求前驱
 {
 	if (ch[r][0])
 	{
@@ -104,7 +100,7 @@ int get_pre(int r)
 	else
 		return INF;
 }
-int get_next(int r)
+int get_next(int r) // 求后继
 {
 	if (ch[r][1])
 	{
@@ -116,33 +112,54 @@ int get_next(int r)
 	else
 		return INF;
 }
-
+void update(int k,int val) // 单点更新关键字为k,v为 val
+{
+	int pos = key_to_Index(k);
+	v[pos] = val;
+	splay(pos,0);
+}
+int query(int l,int r) // 区间查询l，r 之间的最大值
+{
+	l = key_to_Index(l-1);
+	r = key_to_Index(r+1);
+	splay(l,0);
+	splay(r,l);
+	return Max[ch[r][0]];
+}
+void init(int n)
+{
+	memset(ch,0,sizeof(ch));
+	memset(key,0,sizeof(key));
+	memset(fa,0,sizeof(fa));
+	memset(v,0,sizeof(v));
+	memset(Max,0,sizeof(Max));
+	tot = 0;
+	root = 0;
+	//区间查询生成两个防越界的节点,生成的节点v值不影响结果
+	NewNode(root,0,-1,0);
+	NewNode(ch[root][1],n+1,-1,root);
+}
 int main()
 {
-	int n;
-	while (scanf("%d", &n) == 1)
+	int n,m;
+	while (scanf("%d%d", &n, &m) == 2)
 	{
-		init();
-		int ans = 0;
-		for (int i = 0 ; i < n; i++)
+		init(n);
+		for(int i = 1; i <= n; i ++ )
 		{
 			int x;
-			scanf("%d", &x);
-			if (insert(root, x))
-				continue;
-			else
-			{
-				if (i == 0)
-				{
-					ans += x;
-					continue;
-				}
-				int ans1 = abs(x - get_next(root));
-				int ans2 = abs(x - get_pre(root));
-				// cout << ans1 << " " << ans2 << endl;
-				ans += (min(ans1, ans2));
-			}
+			scanf("%d",&x);
+			insert(i,x);
 		}
-		printf("%d\n", ans);
+		for(int i =0 ;i<m;i++)
+		{
+			char op[5];
+			int x,y;
+			scanf("%s%d%d",op,&x,&y);
+			if(op[0] == 'Q')
+				printf("%d\n",query(x,y));
+			else
+				update(x,y);
+		}
 	}
 }
