@@ -25,7 +25,7 @@ void NewNode(int &r,int k, int val, int Fa) // 生成一个以Fa为父节点的�
 											// k为关键字，val为值
 {
 	r = ++ tot;
-	ch[r][0] = ch[r][0] = 0;
+	ch[r][0] = ch[r][1] = 0;
 	key[r] = k;
 	Max[r] = v[r] = val;
 	fa[r] = Fa;
