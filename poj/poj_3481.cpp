@@ -23,8 +23,8 @@ void push_up(int r)
 {
 	sz[r] = sz[ch[r][0]] + sz[ch[r][1]] + 1;
 }
-void NewNode(int &r,int k, int val, int Fa) // 生成一个以Fa为父节点的儿子节点
-	// k为关键字，val为值
+void NewNode(int &r, int k, int val, int Fa) // 生成一个以Fa为父节点的儿子节点
+// k为关键字，val为值
 {
 	r = ++ tot;
 	ch[r][0] = ch[r][1] = 0;
@@ -74,18 +74,21 @@ void splay(int r, int goal)
 		root = r;
 	push_up(r);
 }
-void insert(int k,int val) //将关键字为k值为val的节点插入splay tree
+void insert(int k, int val) //将关键字为k值为val的节点插入splay tree
 {
 	int r = root;
-	while(ch[r][ k > key[r]])
+	while (ch[r][ k > key[r]])
+	{
 		r = ch[r][k > key[r]];
-	NewNode(ch[r][k>key[r]],k,val,r);
-	splay(ch[r][k>key[r]],0);
+		cout << r << " " << ch[r][k > key[r]] << endl;
+	}
+	NewNode(ch[r][k > key[r]], k, val, r);
+	splay(ch[r][k > key[r]], 0);
 }
 int key_to_Index(int k) // 将splay 的关键字换成下标
 {
 	int r = root;
-	while(key[r] != k)
+	while (key[r] != k)
 	{
 		r = ch[r][ k > key[r]];
 	}
@@ -93,11 +96,11 @@ int key_to_Index(int k) // 将splay 的关键字换成下标
 }
 void init()
 {
-	memset(ch,0,sizeof(ch));
-	memset(key,0,sizeof(key));
-	memset(fa,0,sizeof(fa));
-	memset(v,0,sizeof(v));
-	memset(sz,0,sizeof(sz));
+	memset(ch, 0, sizeof(ch));
+	memset(key, 0, sizeof(key));
+	memset(fa, 0, sizeof(fa));
+	memset(v, 0, sizeof(v));
+	memset(sz, 0, sizeof(sz));
 	tot = 0;
 	root = 0;
 	//区间查询生成两个防越界的节点,生成的节点v值不影响结果
@@ -107,80 +110,91 @@ void init()
 int get_Max()
 {
 	int r = root;
-	while(ch[r][1])
+	while (ch[r][1])
 		r = ch[r][1];
 	return r;
 }
 int get_Min()
 {
 	int r = root;
-	while(ch[r][0])
+	while (ch[r][0])
 		r = ch[r][0];
 	return r;
 }
 int get_pre()
 {
 	int r = ch[root][0];
-	while(ch[r][1])
+	while (ch[r][1])
 		r = ch[r][1];
-	splay(r,0);
+	splay(r, 0);
 	return r;
 }
 int get_next()
 {
 	int r = ch[root][1];
-	while(ch[r][0])
+	while (ch[r][0])
 		r = ch[r][0];
-	splay(r,0);
+	splay(r, 0);
 	return r;
 }
+// void del(int r)
+// {
+// 	splay(r,0);
+// 	int temp = ch[root][1];
+// 	while(ch[temp][0])
+// 		temp = ch[temp][0];
+// 	splay(temp,root);
+// 	ch[temp][0] = ch[root][0];
+// 	fa[ch[root][0]] = temp;
+// 	fa[temp] = 0;
+// 	root = temp;
+// }
 void del(int r)
 {
-	splay(r,0);
-	int temp = ch[root][1];
-	while(ch[temp][0])
-		temp = ch[temp][0];
-	splay(temp,root);
-	ch[temp][0] = ch[root][0];
-	fa[ch[root][0]] = temp;
-	fa[temp] = 0;
-	root = temp;
+	splay(r, 0);
+	int pre = get_pre();
+	splay(pre, root);
+	ch[pre][1] = ch[root][1];
+	fa[ch[root][1]] = pre;
+	root = pre;
+	fa[root] = 0;
+	push_up(root);
 }
 int main()
 {
 	int x;
 	init();
-	while(scanf("%d",&x)==1)
+	while (scanf("%d", &x) == 1)
 	{
-		if(!x)
+		if (!x)
 			break;
-		if(x==2)
+		if (x == 2)
 		{
-			if(root==0)
+			if (root == 0)
 				printf("0\n");
 			else
 			{
 				int y = get_Max();
-				printf("%d\n",v[y]);
+				printf("%d\n", v[y]);
 				del(y);
 			}
-		}	
-		else if(x==3)
+		}
+		else if (x == 3)
 		{
-			if(root == 0)
+			if (root == 0)
 				printf("0\n");
 			else
 			{
 				int y = get_Min();
-				printf("%d\n",v[y]);
+				printf("%d\n", v[y]);
 				del(y);
 			}
 		}
 		else
 		{
-			int k,p;
-			scanf("%d%d",&k,&p);
-			insert(p,k);
+			int k, p;
+			scanf("%d%d", &k, &p);
+			insert(p, k);
 		}
 	}
 }
