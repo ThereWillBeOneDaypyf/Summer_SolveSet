@@ -2,6 +2,7 @@
 using namespace std;
 
 //求区间最大值
+//求sum just a hook
 //thanks to pyf ...
 //thanks to qhl ...
 
@@ -15,11 +16,32 @@ int tot = 0;
 int key[N];
 int v[N];
 int Max[N];
+int sum[N];
+int s[N];
+int tar[N];
 int root;
 void push_up(int r)
 {
 	Max[r] = max(Max[ch[r][0]],Max[ch[r][1]]);
 	Max[r] = max(Max[r],v[r]);
+}
+void push_down(int r)
+{
+	if(!tar[r])
+		return;
+	if(ch[r][0])
+	{
+		tar[ch[r][0]] = tar[r];
+		sum[ch[r][0]] = tar[r] * sz[ch[r][0]];
+		v[ch[r][0]] = tar[r];
+	}
+	if(ch[r][1])
+	{
+		tar[ch[r][1]] = tar[r];
+		sum[ch[r][1]] = tar[r] * sz[ch[r][1]];
+		v[ch[r][1]] = tar[r];
+	}
+	tar[r] = 0;
 }
 void NewNode(int &r,int k, int val, int Fa) // 生成一个以Fa为父节点的儿子节点
 											// k为关键字，val为值
@@ -74,6 +96,11 @@ void splay(int r, int goal)
 void insert(int k,int val) //将关键字为k值为val的节点插入splay tree
 {
 	int r = root;
+	if(!root)
+	{
+		NewNode(root,k,val,0);
+		return;
+	}
 	while(ch[r][ k > key[r]])
 		r = ch[r][k > key[r]];
 	NewNode(ch[r][k>key[r]],k,val,r);
@@ -118,13 +145,31 @@ void update(int k,int val) // 单点更新关键字为k,v为 val
 	v[pos] = val;
 	splay(pos,0);
 }
-int query(int l,int r) // 区间查询l，r 之间的最大值
+void update_interval(int l,int r,int val)
+{
+	l = key_to_Index(l-1);
+	r = key_to_Index(r+1);
+	splay(l,0);
+	splay(r,l);
+	sum[ch[r][0]] = sz[ch[r][0]] * val;
+	v[ch[r][0]] = val;
+	tar[ch[r][0]] = val;
+}
+int query_Max(int l,int r) // 区间查询l，r 之间的最大值
 {
 	l = key_to_Index(l-1);
 	r = key_to_Index(r+1);
 	splay(l,0);
 	splay(r,l);
 	return Max[ch[r][0]];
+}
+int query_sum(int l,int r)
+{
+	l = key_to_Index(l-1);
+	r = key_to_Index(r+1);
+	splay(l,0);
+	splay(r,l);
+	return sum[ch[r][0]];
 }
 void init(int n)
 {
