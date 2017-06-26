@@ -77,20 +77,13 @@ void splay(int r, int goal)
 void insert(int k, int val) //将关键字为k值为val的节点插入splay tree
 {
 	int r = root;
-<<<<<<< HEAD
-	while (ch[r][ k > key[r]])
+	if (!root)
 	{
-=======
-	if(!root)
-	{
-		NewNode(root,k,val,0);
+		NewNode(root, k, val, 0);
 		return;
 	}
-	while(ch[r][ k > key[r]])
->>>>>>> refs/remotes/origin/master
+	while (ch[r][ k > key[r]])
 		r = ch[r][k > key[r]];
-		cout << r << " " << ch[r][k > key[r]] << endl;
-	}
 	NewNode(ch[r][k > key[r]], k, val, r);
 	splay(ch[r][k > key[r]], 0);
 }
@@ -120,22 +113,14 @@ void init()
 int get_Max()
 {
 	int r = root;
-<<<<<<< HEAD
-	while (ch[r][1])
-=======
-	while(ch[r][1] && ch[r][1] != 2)
->>>>>>> refs/remotes/origin/master
+	while (ch[r][1] && ch[r][1] != 2)
 		r = ch[r][1];
 	return r;
 }
 int get_Min()
 {
 	int r = root;
-<<<<<<< HEAD
-	while (ch[r][0])
-=======
-	while(ch[r][0]&& ch[r][0] != 1)
->>>>>>> refs/remotes/origin/master
+	while (ch[r][0] && ch[r][0] != 1)
 		r = ch[r][0];
 	return r;
 }
@@ -155,45 +140,21 @@ int get_next()
 	splay(r, 0);
 	return r;
 }
-<<<<<<< HEAD
-// void del(int r)
-// {
-// 	splay(r,0);
-// 	int temp = ch[root][1];
-// 	while(ch[temp][0])
-// 		temp = ch[temp][0];
-// 	splay(temp,root);
-// 	ch[temp][0] = ch[root][0];
-// 	fa[ch[root][0]] = temp;
-// 	fa[temp] = 0;
-// 	root = temp;
-// }
-void del(int r)
-{
-	splay(r, 0);
-	int pre = get_pre();
-	splay(pre, root);
-	ch[pre][1] = ch[root][1];
-	fa[ch[root][1]] = pre;
-	root = pre;
-	fa[root] = 0;
-	push_up(root);
-=======
 int del(int kind) // 小 0 ，大1
 {
 	int r = root;
-	while(ch[r][kind])
-		r = ch[r][kind];	
-	splay(r,0);
-	if(!root)
+	while (ch[r][kind])
+		r = ch[r][kind];
+	splay(r, 0);
+	if (!root)
 		return 0;
-	if(!ch[root][0] && !ch[root][1])
+	if (!ch[root][0] && !ch[root][1])
 	{
 		root = 0;
 		return r;
-	}	
+	}
 	int pre;
-	if(kind==1)
+	if (kind == 1)
 		pre = get_pre();
 	else
 		pre = get_next();
@@ -209,12 +170,11 @@ int del(int kind) // 小 0 ，大1
 }
 void debug(int r)
 {
-	if(!r)
+	if (!r)
 		return;
 	cout << "fa: " << fa[r] << " key " << key[r] << " r " << r << endl;
 	debug(ch[r][0]);
 	debug(ch[r][1]);
->>>>>>> refs/remotes/origin/master
 }
 int main()
 {
@@ -224,42 +184,17 @@ int main()
 	{
 		if (!x)
 			break;
-<<<<<<< HEAD
 		if (x == 2)
-		{
-			if (root == 0)
-				printf("0\n");
-			else
-			{
-				int y = get_Max();
-				printf("%d\n", v[y]);
-				del(y);
-			}
-		}
+			printf("%d\n", del(1));
 		else if (x == 3)
-		{
-			if (root == 0)
-				printf("0\n");
-			else
-			{
-				int y = get_Min();
-				printf("%d\n", v[y]);
-				del(y);
-			}
-		}
-=======
-		if(x==2)
-			printf("%d\n",del(1));
-		else if(x==3)
-			printf("%d\n",del(0));
->>>>>>> refs/remotes/origin/master
+			printf("%d\n", del(0));
 		else
 		{
 			int k, p;
 			scanf("%d%d", &k, &p);
 			insert(p, k);
 		}
-	//	debug(root);
+		//	debug(root);
 	}
 	return 0;
 }
