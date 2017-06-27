@@ -25,6 +25,8 @@ void push_up(int r)
 }
 void push_down(int r)
 {
+	if(!r)
+		return;
 	if(rev[r])
 	{
 		swap(ch[r][0],ch[r][1]);
@@ -200,7 +202,7 @@ int main()
 				flip(x,y);
 			}
 			cnt = 0;
-			//			mid_order(root);
+//			mid_order(root);
 		}
 		cnt = 0 ;
 		mid_order(root);
