@@ -13,7 +13,7 @@ struct Node
 	int id;
 	bool operator < (const Node &rhs) const
 	{
-		return f < rhs.f || ( f == rhs.f && used < rhs.used);
+		return f < rhs.f || ( f == rhs.f && id > rhs.id);
 	}
 }a[N];
 
@@ -72,6 +72,7 @@ int main()
 				temp_ans[temp.id] = temp.used;
 				if(temp.f > 0)
 					q.push(temp);
+				cout << "*" << temp.id << " " << temp.f << " ";
 			}
 			if(cur_h >= 5)
 				temp_ans[1] += cur_h / 5;
@@ -86,6 +87,7 @@ int main()
 				for(int i = 1;i<=n;i++)
 					ans[i] = temp_ans[i];
 			}
+			cout << endl;
 		}
 		for(int i =  1;i<=n;i++)
 			i == 1 ? cout << ans[i] * 5 : cout << ", " << ans[i] * 5;

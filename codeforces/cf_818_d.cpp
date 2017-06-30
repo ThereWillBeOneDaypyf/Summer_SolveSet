@@ -4,23 +4,29 @@ using namespace std;
 //thanks to pyf ...
 //thanks to qhl ...
 
-map<int,int> m;
+
+struct Node
+{
+	int c,n;
+};
 
 struct cmp
 {
-	bool operator () (int a,int b) const
+	bool operator () (Node a,Node b) const
 	{
-		return m[a] > m[b];
+		return a.n > b.n ;
 	}
 };
 int clr[1000000];
-
+int cnt[1000005];
+int vis[1000005];
 int main()
 {
 	int n,tar;
 	while(cin >> n >> tar)
 	{
-		m.clear();
+		memset(cnt,0,sizeof(cnt));
+		memset(clr,0,sizeof(clr));
 		int pos = -1;
 		for(int i = 0 ;i<n;i++)
 		{
@@ -33,42 +39,47 @@ int main()
 			cout << clr[0] << endl;
 			continue;
 		}
-		priority_queue<int,vector<int>,cmp>q;
+		priority_queue<Node,vector<Node>,cmp>q;
 		int flag = 1;
 		for(int i = 0;i<=pos;i++)
 		{
-			if(!m.count(clr[i]))
+			if(!cnt[clr[i]])
 			{
-				q.push(clr[i]);
+				Node temp = {clr[i],++cnt[clr[i]]};
+				q.push(temp);
 			}
-			m[clr[i]]++;
+			else
+				cnt[clr[i]]++;
 		}
-		for(int i = pos+1 ;i<n;i++)
+		for(int i = pos+1;i<n;i++)
 		{
 			int x = clr[i];
-			if(!m.count(x) || m[x] == -1)
+			if(!cnt[x])
 				continue;
-			m[x] ++;
+			cnt[clr[i]]++;
 			if(x == tar)
 			{
-				while(m[q.top()] < m[x])
+				while( cnt[q.top().c] <= cnt[tar])
 				{
-					m[q.top()] = -1;
+					int temp = q.top().c;
 					q.pop();
+					if(cnt[temp] >= cnt[tar])
+					{
+						Node temp_node = {temp,cnt[temp]};
+						q.push(temp_node);
+					}
+					else
+						cnt[temp] = 0;
+					if(tar == temp)
+						break;
 				}
-				if(q.size() == 1)
-					flag = 0;
 			}
 		}
-		if(!flag)
+		while(!q.empty() && q.top().c == tar)
+			q.pop();
+		if(!q.empty())
+			cout << q.top().c << endl;
+		else
 			cout << -1 << endl;
-		else if(pos == -1 || q.size() > 1)
-		{
-			while(q.top() == tar)
-				q.pop();
-			cout << q.top() << endl;
-		}
-		else 
-			cout << - 1 << endl;
 	}	
 }
