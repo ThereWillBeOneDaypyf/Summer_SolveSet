@@ -12,13 +12,13 @@ const int N = 1000;
 
 struct Node
 {
-	int used,f;
+	int used, f;
 	int id;
 	bool operator < (const Node &rhs) const
 	{
-		return f < rhs.f || ( f == rhs.f && id > rhs.id);
+		return f < rhs.f || (f == rhs.f && id > rhs.id);
 	}
-}a[N];
+} a[N];
 
 int f[N];
 int d[N];
@@ -28,9 +28,9 @@ int ans[N];
 int temp_ans[N];
 bool judge(int n)
 {
-	for(int i = 1;i<=n;i++)
+	for (int i = 1; i <= n; i++)
 	{
-		if(ans[i] == temp_ans[i])
+		if (ans[i] == temp_ans[i])
 			continue;
 		else
 			return temp_ans[i] > ans[i];
@@ -39,62 +39,59 @@ bool judge(int n)
 }
 int main()
 {
-	int n,h;
+	int n, h;
 	int ka = 0 ;
-	while(cin >> n && n)
+	while (cin >> n && n)
 	{
 		cin >> h;
-		int Max = 0;
-		for(int i = 1;i<=n;i++)
+		int Max = -1;
+		for (int i = 1; i <= n; i++)
 			cin >> f[i];
-		for(int i = 1;i<=n;i++)
+		for (int i = 1; i <= n; i++)
 			cin >> d[i];
-		for(int i = 1;i<n;i++)
+		for (int i = 1; i < n; i++)
 		{
 			cin >> t[i];
 		}
-		for(int i = 2;i<=n;i++)
-			pre_t[i] = pre_t[i-1] + t[i-1];
-		for(int i = n;i>=1;i--)
+		for (int i = 2; i <= n; i++)
+			pre_t[i] = pre_t[i - 1] + t[i - 1];
+		for (int i = 1; i <= n; i++)
 		{
 			int res = 0;
 			priority_queue<Node>q;
-			memset(temp_ans,0,sizeof(temp_ans));
-			for(int j = 1;j<=i;j++)
+			memset(temp_ans, 0, sizeof(temp_ans));
+			while (!q.empty())
+				q.pop();
+			for (int j = 1; j <= i; j++)
 			{
-				a[j].id = j,a[j].used = 0,a[j].f = f[j];
+				a[j].id = j, a[j].used = 0, a[j].f = f[j];
 				q.push(a[j]);
-			}	
+			}
 			int cur_h = 60 * h - pre_t[i] * 5;
 			cur_h /= 5;
-			while(cur_h > 0&&!q.empty())
+			memset(temp_ans, 0, sizeof(temp_ans));
+			while (cur_h > 0)
 			{
 				Node temp = q.top();
 				cur_h --;
 				q.pop();
 				res += temp.f;
 				temp.f -= d[temp.id];
-				temp.used ++;
-				temp_ans[temp.id] = temp.used;
-				if(temp.f < 0)
+				temp_ans[temp.id] ++;
+				if (temp.f < 0)
 					temp.f = 0;
 				q.push(temp);
 			}
-			if(res > Max)
+			if (res > Max)
 			{
 				Max = res;
-				for(int i = 1;i<=n;i++)
-					ans[i] = temp_ans[i];
-			}
-			else if(res == Max && judge(n))
-			{
-				for(int i = 1;i<=n;i++)
-					ans[i] = temp_ans[i];
+				for (int j = 1; j <= n; j++)
+					ans[j] = temp_ans[j];
 			}
 		}
-		if(ka ++)
+		if (ka ++)
 			cout << endl;
-		for(int i =  1;i<=n;i++)
+		for (int i =  1; i <= n; i++)
 			i == 1 ? cout << ans[i] * 5 : cout << ", " << ans[i] * 5;
 		cout << endl;
 		cout << "Number of fish expected: " << Max << endl;
