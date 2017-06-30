@@ -1,4 +1,7 @@
-#include<bits/stdc++.h>
+#include<iostream>
+#include<algorithm>
+#include<cstring>
+#include<queue>
 using namespace std;
 
 //thanks to pyf ...
@@ -37,8 +40,10 @@ bool judge(int n)
 int main()
 {
 	int n,h;
-	while(cin >> n >> h)
+	int ka = 0 ;
+	while(cin >> n && n)
 	{
+		cin >> h;
 		int Max = 0;
 		for(int i = 1;i<=n;i++)
 			cin >> f[i];
@@ -61,21 +66,20 @@ int main()
 				q.push(a[j]);
 			}	
 			int cur_h = 60 * h - pre_t[i] * 5;
-			while(cur_h >= 5&&!q.empty())
+			cur_h /= 5;
+			while(cur_h > 0&&!q.empty())
 			{
 				Node temp = q.top();
-				cur_h -= 5;
+				cur_h --;
 				q.pop();
 				res += temp.f;
 				temp.f -= d[temp.id];
 				temp.used ++;
 				temp_ans[temp.id] = temp.used;
-				if(temp.f > 0)
-					q.push(temp);
-				cout << "*" << temp.id << " " << temp.f << " ";
+				if(temp.f < 0)
+					temp.f = 0;
+				q.push(temp);
 			}
-			if(cur_h >= 5)
-				temp_ans[1] += cur_h / 5;
 			if(res > Max)
 			{
 				Max = res;
@@ -87,8 +91,9 @@ int main()
 				for(int i = 1;i<=n;i++)
 					ans[i] = temp_ans[i];
 			}
-			cout << endl;
 		}
+		if(ka ++)
+			cout << endl;
 		for(int i =  1;i<=n;i++)
 			i == 1 ? cout << ans[i] * 5 : cout << ", " << ans[i] * 5;
 		cout << endl;
