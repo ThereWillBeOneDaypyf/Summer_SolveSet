@@ -75,7 +75,7 @@ int main()
 				}
 			}
 		}
-		while(!q.empty() && q.top().c == tar)
+		while(!q.empty() && (q.top().c == tar || cnt[q.top().c] < tar))
 			q.pop();
 		if(!q.empty())
 			cout << q.top().c << endl;
