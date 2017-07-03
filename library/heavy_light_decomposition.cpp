@@ -145,9 +145,16 @@ int get_sum(int x,int y)
 		sum += query(w[top[x]],w[x],1);
 		x = fa[top[x]];	
 	}
-	if(deep[x] > deep[y])
+	if(deep[x] > deep[y]) // point to point
 		swap(x,y);
 	sum += query(w[x],w[y],1);
+	/*edge to point
+	if(x == y)
+		return sum;
+	if(deep[x] > deep[y])
+		swap(x,y);
+	sum += query(w[bigson[x]],w[y],1);
+	*/
 	return sum;	
 }	
 int main()
