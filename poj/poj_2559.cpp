@@ -1,46 +1,57 @@
 #include<iostream>
-#include<cstdio>
 #include<algorithm>
 #include<cstring>
+#include<stack>
 using namespace std;
-
 
 //thanks to pyf ...
 //thanks to qhl ...
 
-const int N = 1e6+8;
-typedef long long ll;
-int l[N],r[N];
-int a[N];
+const int N = 1e6;
+
+int l[N], r[N], a[N];
 
 int main()
 {
 	int n;
-	while(scanf("%d",&n) == 1 && n) 
+	while (cin >> n && n)
 	{
-		for(int i =0 ;i< n;i++)
-			scanf("%d",a+i);
-		for(int i =0 ;i<n;i++)
-			l[i] = r[i] = i;
-		for(int i =1 ;i<n;i++)
+		for (int i = 1; i <= n; i++)
+			cin >> a[i];
+		stack<pair<int, int> > st;
+		for (int i = 1; i <= n; i++)
 		{
-			int cur = i;
-			while( cur > 0 && a[i] <= a[cur-1])
-				cur = l[cur-1];
-			l[i] = cur;
+			while (!st.empty() && st.top().first > a[i])
+			{
+				pair<int, int> temp = st.top();
+				st.pop();
+				r[temp.second] = i - 1;
+			}
+			st.push(make_pair(a[i], i));
 		}
-		for(int i = n-2 ; i >= 0; i --)
+		while (!st.empty())
 		{
-			int cur = i;
-			while( cur < n- 1&& a[i] <= a[cur+1])
-				cur = r[cur+1];
-			r[i] = cur;
+			r[st.top().second] = n;
+			st.pop();
 		}
-		ll ans = 0;
-		for(int i = 0;i<n;i++)
+		for (int i = n; i >= 1; i--)
 		{
-			ans = max(ans , (ll) a[i] * (r[i] - l[i] + 1));
+			while (!st.empty() && st.top().first > a[i])
+			{
+				pair<int, int>temp = st.top();
+				st.pop();
+				l[temp.second] = i + 1;
+			}
+			st.push(make_pair(a[i], i));
 		}
-		printf("%lld\n",ans);
+		while (!st.empty())
+		{
+			l[st.top().second] = 1;
+			st.pop();
+		}
+		long long ans = 0;
+		for (int i = 1; i <= n; i++)
+			ans = max(ans, (long long)(r[i] - l[i] + 1) * a[i]);
+		cout << ans << endl;
 	}
 }
