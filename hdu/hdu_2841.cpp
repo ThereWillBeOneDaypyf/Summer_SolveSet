@@ -39,7 +39,7 @@ void solve(int m)
 				m /= i;
 		}
 	}
-	if (!cnt)
+	if (m != 1)
 		a[cnt ++] = m;
 	tot = 0;
 	q[tot++] = -1;
