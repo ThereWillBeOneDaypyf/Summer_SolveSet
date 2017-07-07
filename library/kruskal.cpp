@@ -1,7 +1,4 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
-#include<cstring>
+#include<bits/stdc++.h>
 using namespace std;
 
 //thanks to pyf ...
@@ -92,7 +89,7 @@ int main()
 		for (int i = 0; i < m; i++)
 			cin >> edge[i].u >> edge[i].v >> edge[i].d;
 		sort(edge, edge + n);
-		int res = unique_MST();
+		int res = unique_MST(); //先把值取下来 不要多次调用感觉会T
 		if (res != -1)
 			cout << res << endl;
 		else
