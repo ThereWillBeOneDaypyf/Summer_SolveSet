@@ -47,27 +47,28 @@ int km()
 			memset(visy, 0, sizeof(visy));
 			if (dfs(i))
 				break;
-			for (int i = 1; i <= un; i++)
+			for (int j = 1; j <= un; j++)
 			{
-				if (visx[i])
+				if (visx[j])
 				{
-					for (int j = 1; j <= vn; j++)
+					for (int k = 1; k <= vn; k++)
 					{
-						if (!visy[j])
+						if (!visy[k] && d > cx[j] + cy[k] - Map[j][k])
 						{
-							d = min(d , cx[i] + cy[j] - Map[i][j]);
+							d = (cx[j] + cy[k] - Map[j][k]);
 						}
 					}
 				}
 			}
 			if (d == INF)
 				break;
-			for (int i = 1; i <= un; i++)
-				if (visx[i])
-					cx[i] -= d;
-			for (int i = 1; i <= vn; i++)
-				if (visy[i])
-					cy[i] -= d;
+			for (int j = 1; j <= un; j++)
+			{
+				if (visx[j])
+					cx[j] -= d;
+				if (visy[j])
+					cy[j] += d;
+			}
 		}
 	}
 	int ans = 0;
@@ -79,13 +80,13 @@ int km()
 int main()
 {
 	int n;
-	while (cin >> n)
+	while (~scanf("%d", &n))
 	{
 		un = vn = n;
 		memset(Map, 0, sizeof(Map));
 		for (int i = 1; i <= n; i++)
 			for (int j = 1; j <= n; j++)
-				cin >> Map[i][j];
-		cout << km() << endl;
+				scanf("%d", &Map[i][j]);
+		printf("%d\n", km());
 	}
 }
