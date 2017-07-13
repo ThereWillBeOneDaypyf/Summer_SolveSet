@@ -7,40 +7,48 @@ using namespace std;
 const int N = 1e5;
 
 int a[N];
+int n;
+bool judge()
+{
+	int i;
+	for (i = 1; i < n; i++)
+		if (a[i - 1] <= a[i])
+			break;
+	if (i == n)
+		return true;
+	for (i = 1; i < n; i++)
+		if (a[i - 1] >= a[i])
+			break;
+	if (i == n)
+		return true;
+	for (int i = 1; i < n; i++)
+		if (a[i - 1] != a[i])
+			break;
+	if (i == n)
+		return true;
+	for (i = 1; i < n; i++)
+		if (a[i - 1] >= a[i])
+			break;
+	for (; i < n; i++)
+		if (a[i - 1] != a[i])
+			break;
+	for (; i < n; i++)
+		if (a[i - 1] <= a[i])
+			break;
+	if (i == n)
+		return true;
+	return false;
+}
+
 int main()
 {
-	int n;
-	while(cin >> n)
+	while (cin >> n)
 	{
-		for(int i = 0;i<n;i++)
+		for (int i = 0; i < n; i++)
 			cin >> a[i];
-		int i = 0;
-		int flag =0;
-		for(i = 1;i<n;i++)
-			if(a[i-1] >= a[i])
-				break;			
-		if(i == n)
-			flag = 1;
-		for(;i<n;i++)
-			if(a[i-1] != a[i])
-				break;
-		for(;i<n;i++)
-			if(a[i-1] <= a[i])
-				break;
-		if(flag)
-		{
-			int cnt = 0;
-			for(int i = 1;i<n;i++)
-			{
-				if(a[i-1] == a[i])
-					cnt ++;
-			}
-			if(cnt == n-1)
-				flag = 0;
-		}
-		if(i<n || flag)
+		if (!judge())
 			cout << "NO" << endl;
 		else
 			cout << "YES" << endl;
-	}	
+	}
 }
