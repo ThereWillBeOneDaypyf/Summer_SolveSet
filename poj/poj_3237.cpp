@@ -97,7 +97,7 @@ void flip(int l, int r, int step)
 {
 	if (t[step].l == l && t[step].r == r)
 	{
-		t[step].rev = 1;
+		t[step].rev ^= 1;
 		swap(t[step].Max, t[step].Min);
 		t[step].Max = -t[step].Max;
 		t[step].Min = -t[step].Min;
@@ -164,6 +164,8 @@ void change_val(int u, int v, int val)
 }
 int get_Max(int u, int v)
 {
+	if (u == v)
+		return 0;
 	int ans = -INF;
 	while (top[u] != top[v])
 	{
