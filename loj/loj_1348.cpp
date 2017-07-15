@@ -162,7 +162,7 @@ int main()
 			if (op == 0)
 				printf("%d\n", get_sum(x + 1, y + 1));
 			else
-				update(x + 1, y, 1);
+				update(w[x + 1], y, 1);
 		}
 	}
 }
