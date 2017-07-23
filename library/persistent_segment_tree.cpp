@@ -71,4 +71,5 @@ int main()
 			printf("%d\n", v[query(1, n, root[x - 1], root[y], z)]);
 		}
 	}
+	return 0;
 }
