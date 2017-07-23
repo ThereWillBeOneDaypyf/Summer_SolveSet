@@ -37,8 +37,10 @@ int main()
 					tar.insert(a[i] + b[j]);
 			}
 		}
-		if (tar.size() == 0 || tar.size() == (r - l + 1))
+		if (tar.size() == (r - l + 1))
 			cout << 0 << endl;
+		else if (tar.size() == 0)
+			cout << r - l + 1 << endl;
 		else
 		{
 			set<long long> :: iterator it;
