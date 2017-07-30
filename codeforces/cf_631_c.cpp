@@ -43,7 +43,7 @@ int main()
 		for (int i = n; i > cur.second; i--)
 			b[i] = a[i];
 		int l = 1, r = cur.second;
-		for (int i = tar.size(); i >= 1; i--)
+		for (int i = tar.size() - 1; i >= 1; i--)
 		{
 			for (int j = tar[i].second; j >= tar[i - 1].second + 1; j--)
 			{
