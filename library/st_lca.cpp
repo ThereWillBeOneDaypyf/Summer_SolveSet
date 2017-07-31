@@ -3,9 +3,7 @@ using namespace std;
 
 //thanks to pyf ...
 //thanks to qhl ...
-
 const int N = 1e5 + 8;
-
 struct Edge
 {
 	int u,v,next;
