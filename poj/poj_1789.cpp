@@ -1,13 +1,15 @@
 #include<iostream>
 #include<algorithm>
 #include<cstring>
+#include<vector>
+#include<string>
 using namespace std;
 
 
 //thanks to pyf ...
 //thanks to qhl ...
 
-const int N = 1e5 + 8;
+const int N = 2e6 + 8;
 
 struct Edge
 {
@@ -73,6 +75,7 @@ int main()
 	while (cin >> n && n)
 	{
 		init();
+		s.clear();
 		for (int i = 0; i < n; i++)
 		{
 			string str;
