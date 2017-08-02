@@ -69,6 +69,6 @@ int main()
 					Map[i][j] = 1;
 			}
 		}
-		cout << hungry() / 2 << endl;
+		cout << n - hungry() / 2 << endl;
 	}
 }
