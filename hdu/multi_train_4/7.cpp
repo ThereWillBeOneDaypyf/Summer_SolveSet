@@ -41,7 +41,7 @@ void dfs(int u, int flag)
 		if (edge[i].mark)
 			continue;
 		edge[i].mark = edge[i ^ 1].mark = 1;
-		ret[flag] = ret[flag] * d % MOD;
+		ret[flag] = 1LL * ret[flag] * d % MOD;
 		dfs(v, flag ^ 1);
 	}
 }
@@ -72,6 +72,7 @@ int main()
 		{
 			int v = q.front();
 			del[v] = 1;
+			q.pop();
 			for (int i = head[v]; ~i; i = edge[i].next)
 			{
 				if (edge[i].mark)
@@ -79,7 +80,9 @@ int main()
 				int u = edge[i].v;
 				int d = edge[i].d;
 				edge[i].mark = edge[i ^ 1].mark = 1;
+				del[u] = 1;
 				ans = ans % MOD * d % MOD;
+				ans %= MOD;
 				for (int j = head[u]; ~j; j = edge[j].next)
 				{
 					if (edge[j].mark)
@@ -99,6 +102,7 @@ int main()
 				ret[0] = ret[1] = 1;
 				dfs(i, 0);
 				ans = ans * 1LL * (ret[0] % MOD + ret[1] % MOD) % MOD;
+				ans %= MOD;
 			}
 		}
 		printf("%lld\n", ans);
