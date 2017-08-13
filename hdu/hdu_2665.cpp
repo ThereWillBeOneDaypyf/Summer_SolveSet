@@ -68,6 +68,7 @@ int main()
 		scanf("%d%d", &n, &m);
 		memset(root, 0, sizeof(root));
 		memset(t, 0, sizeof(t));
+		cnt = 0;
 		for (int i = 1; i <= n; i++)
 		{
 			scanf("%d", a + i);
@@ -76,11 +77,7 @@ int main()
 		sort(v + 1, v + 1 + n);
 		int len = unique(v + 1, v + 1 + n) - v;
 		for (int i = 1; i <= n; i++)
-		{
 			update(1, n, root[i], root[i - 1], get_id(a[i], len));
-			debug(1, n, root[i]);
-			cout << endl;
-		}
 		for (int i = 0; i < m; i++)
 		{
 			int l, r, k;
