@@ -2,166 +2,182 @@
 #include<cstring>
 #include<algorithm>
 #include<cstdio>
+#include<vector>
 using namespace std;
 
 
 //thanks to pyf ...
 //thanks to qhl ...
 #define INF 1e18
-const int N = 1e6 + 8;
-struct Edge
-{
-	int u, v, next;
-	long long d;
-} edge[N * 2];
-int fa[N][21], dep[N];
-int dfn[N], L[N], R[N];
+const int N = 3e5 + 8;
+
+int dep[N], fa[N][22], L[N], R[N], dfn[N];
 long long dis[N];
-int head[N];
-int tot = 0, Index = 0;
+vector<pair<int, long long> > G[N];
+int Index = 0;
 void init()
 {
-	tot = 0;
 	Index = 0;
-	memset(head, -1, sizeof(head));
+	memset(dep, 0, sizeof(dep));
+	for (int i = 0; i < N; i++)
+		G[i].clear();
 }
-void add_edge(int u, int v, long long d)
+
+void add_edge(int u, int v, int d)
 {
-	edge[tot].u = u, edge[tot].v = v, edge[tot].d = d;
-	edge[tot].next = head[u];
-	head[u] = tot ++;
+	G[u].push_back(make_pair(v, d));
+	G[v].push_back(make_pair(u, d));
 }
 void dfs(int u, int Fa, int d, long long w)
 {
-	dep[u] = d, dis[u] = w, fa[u][0] = Fa;
-	dfn[u] = L[u] = ++ Index;
-	for (int i = 1; i <= 20; i++)
+	dep[u] = d;
+	dis[u] = w, dfn[u] = L[u] = ++ Index;
+	fa[u][0] = Fa;
+	for (int i = 1; i < 21; i++)
 		fa[u][i] = fa[fa[u][i - 1]][i - 1];
-	for (int i = head[u]; ~i; i = edge[i].next)
+	for (int i = 0; i < G[u].size(); i++)
 	{
-		int v = edge[i].v;
-		long long ed = edge[i].d;
+		pair<int, long long> temp = G[u][i];
+		int v = temp.first;
+		long long ww = temp.second;
 		if (v == Fa)
 			continue;
-		dfs(v, u, d + 1, min(w, ed));
+		dfs(v, u, d + 1, min(w, ww));
 	}
-	R[u] = ++ Index;
+	R[u] = Index;
 }
-int lca(int x, int y)
+int lca(int u, int v)
 {
-	if (dep[x] < dep[y])
-		swap(x, y);
+	if (dep[u] < dep[v])
+		swap(u, v);
 	for (int i = 20; i >= 0; i--)
-		if (dep[fa[x][i]] >= dep[y])
-			x = fa[x][i];
-	if (x == y)
-		return x;
+		if (dep[fa[u][i]] >= dep[v])
+			u = fa[u][i];
+	if (u == v)
+		return u;
 	for (int i = 20; i >= 0; i--)
-		if (fa[x][i] != fa[y][i])
-			x = fa[x][i], y = fa[y][i];
-	return fa[x][0];
+		if (fa[u][i] != fa[v][i])
+			u = fa[u][i], v = fa[v][i];
+	return fa[u][0];
 }
-/* build virtual tree */
-int key[N * 2], is_key[N], is_lca[N], st[N];
+// virtual tree
+vector<pair<int, long long> >VG[N];
+int kp[N];
+int is_k[N], st[N];
 long long dp[N];
-Edge vedge[N * 2];
-int vhead[N];
-int vtot = 0, top = 0;
-void vinit()
+bool cmp(int u, int v) {return dfn[u] < dfn[v]; }
+bool judge(int u, int v) { return L[u] <= L[v] && R[v] <= R[u];}
+void add_vedge(int u, int v)
 {
-	vtot = 0;
+	VG[u].push_back(make_pair(v, 0));
+	VG[v].push_back(make_pair(u, 0));
 }
-void add_vedge(int u, int v, long long d)
+void tree_up(int u, int Fa)
 {
-	vedge[vtot].u = u, vedge[vtot].v = v, vedge[vtot].d = d, vedge[vtot].next = vhead[u];
-	vhead[u] = vtot ++;
-}
-bool cmp(int u, int v)
-{
-	return dfn[u] < dfn[v];
-}
-bool check(int u, int v) // u is in the poth of v
-{
-	return L[u] <= L[v] && R[v] <= R[u];
-}
-void tree_up(int u)
-{
-	long long temp = 0;
-	dp[u] = dis[u];
-	for (int i = vhead[u]; ~i; i = vedge[i].next)
+	long long sum = 0;
+	//cout << "*" << u << endl;
+	for (int i = 0; i < VG[u].size(); i++)
 	{
-		int v = vedge[i].v;
-		tree_up(v);
-		temp += dp[v];
+		pair<int, long long> temp = VG[u][i];
+		if (temp.first == Fa)
+			continue;
+		tree_up(temp.first, u);
+		sum += 1LL * dp[temp.first];
 	}
-	if (temp)
-		dp[u] = min(dp[u], temp);
+	if (!sum)
+		dp[u] = dis[u];
+	else
+		dp[u] = min(dis[u], sum);
+	VG[u].clear();
 }
-void bulid_vtree()
+// void build_vtree()
+// {
+// 	int k;
+// 	scanf("%d", &k);
+// 	for (int i = 0; i < k; i++)
+// 	{
+// 		scanf("%d", kp + i);
+// 	}
+// 	int cnt = k;
+// 	sort(kp, kp + cnt, cmp);
+// 	// for (int i = 0; i < k; i++)
+// 	// 	kp[cnt++] = lca(kp[i], kp[i - 1]);
+// 	kp[cnt++] = kp[0];
+// 	for (int i = 1; i < k; ++i) if (lca(kp[cnt], kp[i]) != kp[cnt]) kp[cnt++] = kp[i];
+// //	cnt = unique(kp, kp + cnt) - kp;
+// 	int top = 0;
+// 	st[++top] = 1;
+// 	for (int i = 0; i < cnt; i++)
+// 	{
+// 		int anc = lca(st[top], kp[i]);
+// 		while (1)
+// 		{
+// 			if (dep[anc] >= dep[st[top - 1]])
+// 			{
+// 				add_vedge(anc, st[top--], 0);
+// 				break;
+// 			}
+// 			add_vedge(st[top - 1], st[top], 0);
+// 			top --;
+// 		}
+// 		if (st[top] != anc) st[++top] = anc;
+// 		if (st[top] != kp[i]) st[++top] = kp[i];
+// 	}
+// 	while (--top) add_vedge(st[top], st[top + 1], 0);
+// 	tree_up(1, 1);
+// 	printf("%lld\n", dp[1]);
+// 	VG[1].clear();
+// 	dp[1] = 0;
+// }
+int h[N];
+void build_vtree()
 {
-	int k;
-	vinit();
-	scanf("%d", &k);
 	int cnt = 0;
-	top = 0;
-	for (int i = 0; i < k; i++)
+	int K;
+	int top = 0;
+	scanf("%d", &K);
+	for (int i = 1; i <= K; i++)
+		scanf("%d", h + i);
+	sort(h + 1, h + K + 1, cmp);
+	int tot = 0;
+	h[++tot] = h[1];
+	for (int i = 2; i <= K; i++)
+		if (lca(h[tot], h[i]) != h[tot])h[++tot] = h[i];
+	st[++top] = 1;
+	for (int i = 1; i <= tot; i++)
 	{
-		scanf("%d", key + i);
-		cnt ++;
-		is_key[key[i]] = 1;
-	}
-	for (int i = 1; i < k; i++)
-	{
-		key[cnt++] = lca(key[i], key[i - 1]);
-		is_lca[key[cnt - 1]] = 1;
-	}
-	key[cnt++] = 1;
-	sort(key, key + cnt, cmp);
-	cnt = unique(key, key + cnt) - key;
-	for (int i = 0; i < cnt; i++)
-	{
-		if (top && !check(st[top], key[i]))
-			top --;
-		if (top)
+		int now = h[i], f = lca(now, st[top]);
+		while (1)
 		{
-			if (!is_key[st[top]])
+			if (dep[f] >= dep[st[top - 1]])
 			{
-				add_vedge(st[top], key[i], dis[key[i]]);
-				st[++top] = key[i];
+				add_vedge(f, st[top--]);
+				if (st[top] != f)st[++top] = f;
+				break;
 			}
+			add_vedge(st[top - 1], st[top]); top--;
 		}
-		else
-			st[++top] = key[i];
+		if (st[top] != now)st[++top] = now;
 	}
-	tree_up(1);
-	// for (int i = 0; i < vtot; i++)
-	// 	cout << vedge[i].u << " " << vedge[i].v << " " << vedge[i].d << endl;
-	for (int i = 0; i < cnt; i++)
-		is_key[key[i]] = 0, vhead[key[i]] = -1;
-
+	while (--top)add_vedge(st[top], st[top + 1]);
+	tree_up(1, 1);
+	printf("%lld\n", dp[1]);
 }
 int main()
 {
 	int n;
 	while (scanf("%d", &n) == 1)
 	{
-		init();
 		for (int i = 1; i < n; i++)
 		{
-			int u, v;
-			long long d;
-			scanf("%d%d%lld", &u, &v, &d);
+			int u, v, d;
+			scanf("%d%d%d", &u, &v, &d);
 			add_edge(u, v, d);
-			add_edge(v, u, d);
 		}
 		dfs(1, 1, 0, INF);
 		int m;
 		scanf("%d", &m);
-		memset(vhead, -1, sizeof(head));
 		for (int i = 0; i < m; i++)
-		{
-			bulid_vtree();
-			printf("%lld\n", dp[1]);
-		}
+			build_vtree();
 	}
 }
