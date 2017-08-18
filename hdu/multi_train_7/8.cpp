@@ -65,8 +65,8 @@ int main()
 			a[i + n] = a[i];
 			a[i + n].flag ^= 1;
 		}
-		long long ans = sum[0] * sum[1];
-		for (int i = 0; i < 2 * n; i++)
+
+		for (int i = 0; i < 2 * n; i++)long long ans = sum[0] * sum[1];
 		{
 			sum[a[i].flag] -= a[i].val;
 			sum[a[i].flag ^ 1] += a[i].val;
