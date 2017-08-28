@@ -36,9 +36,6 @@ int main()
 					ans[j] ++;
 			}
 		}
-		for (int i = 0; i < s.length(); i++)
-			for (int j = 0; j < s.length(); j++)
-				cout << i << " " << j << " " << dp[i][j] << endl;
 		for (int i = 1; i <= s.length(); i++)
 		{
 			if (i != 1)
