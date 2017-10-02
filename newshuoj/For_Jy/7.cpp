@@ -6,7 +6,6 @@ using namespace std;
 
 long long dfs(int n, int m)
 {
-	cout << n << " " << m << endl;
 	if (n == 0 || n == 1 || m == 0 || m == 1)
 		return 1;
 	if (n > m)
