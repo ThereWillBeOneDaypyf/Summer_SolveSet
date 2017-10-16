@@ -40,6 +40,7 @@ int main()
 						break;
 				}
 				cout << endl;
+				break;
 			}
 		}
 		if(!flag)
