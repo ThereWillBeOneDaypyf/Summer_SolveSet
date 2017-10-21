@@ -1,105 +1,89 @@
-#include<bits/stdc++.h>
-
+#include<iostream>
+#include<algorithm>
+#include<cstring>
+#include<cstdio>
+#include<vector>
 using namespace std;
-
 
 //thanks to pyf ...
 //thanks to qhl ...
 
-typedef long long ll;
+const int N = 4e4 + 7;
 
-const int N = 1e5 + 7;
-
-struct Edge
-{
-	int u,v,next;
-	ll d;
-}edge[N*2];
-struct Query
-{
-	int id;
-	int u,v;
-	int next;
-}Q[N*2];
-
-
-int fa[N];
-int vis[N];
-int ans[N];
-int head[N];
-ll dis[N];
-int q_head[N];
+long long dis[N];
+int dep[N*4];
+int dp[N*4][22];
+int rec[N*4];
+int first[N];
+int LOG2[N*4];
 int tot = 0;
-int q_tot = 0;
-
+vector<pair<int,int> > G[N];
 void init()
 {
-	memset(Q,0,sizeof(Q));
-	memset(edge,0,sizeof(edge));
-	memset(vis,0,sizeof(vis));
-	memset(head,-1,sizeof(head));
-	memset(q_head,-1,sizeof(q_head));
-	memset(dis,0,sizeof(dis));
+	for(int i = 0; i< N;i++)
+		G[i].clear();
+	for(int i = 0;i<4*N;i++)
+		LOG2[i] = (i == 0 ? -1 : LOG2[i>>1] + 1);
 	tot = 0;
-	q_tot = 0;
 }
-void add_edge(int u,int v, ll d)
+void add_edge(int u,int v,int d)
 {
-	edge[tot].u = u;
-	edge[tot].v = v;
-	edge[tot].d = d;
-	edge[tot].next = head[u];
-	head[u] = tot ++;
+	G[u].push_back(make_pair(v,d));
+	G[v].push_back(make_pair(u,d));
 }
-void add_q(int u,int v,int id)
+void dfs(int u,int fa,int d,long long w)
 {
-	Q[q_tot].u = u;
-	Q[q_tot].v = v;
-	Q[q_tot].id = id;
-	Q[q_tot].next = q_head[q_tot];
-	q_head[u] = q_tot ++ ; 
-}
-int find(int x)
-{
-	if(x != fa[x])
-		fa[x] = find(fa[x]);
-	return fa[x];
-}
-void get_inf(int u,int Fa)
-{
-	for(int i = head[u] ;i != -1; i = edge[i].next)
+	dis[u] = w;
+	first[u] = ++ tot;
+	rec[tot] = u;
+	dep[tot] = d;
+	for(int i = 0;i != G[u].size();i++)
 	{
-		int v = edge[i].v;
-		if(v == Fa)
+		int v = G[u][i].first;
+		int dd = G[u][i].second;
+		if(v == fa)
 			continue;
-		dis[v] = dis[u] + edge[i].d;
-		get_inf(v,u);
+		dfs(v,u,d+1,w + dd);
+		rec[++ tot] = u;
+		dep[tot] = d;
 	}
 }
-void lca(int u,int Fa)
+void init_st()
 {
-	fa[u] = u;
-	for(int i = head[u];i!=-1;i=edge[i].next)
+	for(int i = 1;i<=tot;i++)
+		dp[i][0] = i;
+	for(int j = 1;(1 << j)<= tot;j++)
 	{
-		int v= edge[i].v;
-		if(v == Fa)
-			continue;
-		lca(v,u);
-		fa[v] = u;
-	}
-	vis[u] = 1;
-	for(int i = q_head[u];i!=-1;i=Q[i].next)
-	{
-		int v= Q[i].v;
-		if(vis[v])
+		for(int i = 1;i + (1 << j) <= tot + 1;i++)
 		{
-			ans[Q[i].id] = find(v);
+			int a = dp[i][j-1],b = dp[i + (1 << j -1)][j-1];
+			dp[i][j] = dep[a] < dep[b] ? a : b;
 		}
 	}
 }
-ll get_dis(int u,int v,int id)
+int rmq(int l,int r)
 {
-	return dis[u] + dis[v] - 2 * dis[ans[id]];
+	int k = LOG2[r - l + 1];
+	int a = dp[l][k], b = dp[r - (1 << k) + 1][k];
+	return dep[a] < dep[b] ? a : b;
+}
+
+int lca(int u,int v)
+{
+	int x = first[u], y = first[v];
+	if(x > y)
+		swap(x,y);
+	int res = rmq(x,y);
+	return rec[res];
+}
+void debug()
+{
+	for(int i = 1;i<=tot;i++)
+		cout << i << " ";
+	cout << endl;
+	for(int i = 1;i<=tot;i++)
+		cout << rec[i] << " ";
+	cout << endl;
 }
 int main()
 {
@@ -110,31 +94,21 @@ int main()
 		int n,m;
 		scanf("%d%d",&n,&m);
 		init();
-		vector<pair<int,int> > query;
-		query.clear();
-		for(int i = 1;i < n;i++)
+		for(int i = 1;i<n;i++)
 		{
-			int u,v;
-			ll d;
-			scanf("%d%d%lld",&u,&v,&d);
+			int u,v,d;
+			scanf("%d%d%d",&u,&v,&d);
 			add_edge(u,v,d);
-			add_edge(v,u,d);
-		}
-		get_inf(1,1);
+		}	
+		dfs(1,1,0,0);
+		init_st();
+		//debug();
 		for(int i = 0;i<m;i++)
 		{
 			int u,v;
 			scanf("%d%d",&u,&v);
-			add_q(u,v,i);
-			add_q(v,u,i);
-			query.push_back(make_pair(u,v));
+			int anc = lca(u,v);
+			printf("%lld\n",dis[u] + dis[v] - 2 * dis[anc]);
 		}
-		lca(1,1);
-		for(int i = 0;i<m;i++)
-		{
-			int u = query[i].first;
-		   	int v = query[i].second;
-			printf("%lld\n",get_dis(u,v,i));
-		}	
 	}	
 }
