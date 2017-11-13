@@ -31,12 +31,20 @@ int main()
 		{
 			int sum = find(tar);
 			//if (sum)
+<<<<<<< HEAD
 			if (sum == 1)
 				cnt ++;
+=======
+			cnt += sum;
+>>>>>>> b47d19aa3d68ec3d182ba1ee77e710b4fb967c2d
 		}
 		if (cnt == 1)
 			cout << "YES" << endl;
 		else
 			cout << "NO" << endl;
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> b47d19aa3d68ec3d182ba1ee77e710b4fb967c2d

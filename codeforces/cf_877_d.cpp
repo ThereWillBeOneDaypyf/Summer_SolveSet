@@ -25,7 +25,11 @@ int bfs()
 	{
 		Node temp = q.front();
 		q.pop();
+<<<<<<< HEAD
 		if (temp.x == ex && temp.y == ey)
+=======
+		if(temp.x == ex && temp.y == ey)
+>>>>>>> b47d19aa3d68ec3d182ba1ee77e710b4fb967c2d
 			return temp.step;
 		for (int i = 0; i < 4; i++)
 		{
@@ -38,6 +42,11 @@ int bfs()
 				if (vis[tx][ty])
 					continue;
 				vis[tx][ty] = 1;
+<<<<<<< HEAD
+=======
+				if(tx == ex && ty == ey)
+					return temp.step + 1;
+>>>>>>> b47d19aa3d68ec3d182ba1ee77e710b4fb967c2d
 				q.push({tx, ty, temp.step + 1});
 			}
 
@@ -61,4 +70,8 @@ int main()
 		sx --, sy --, ex--, ey--;
 		cout << bfs() << endl;
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> b47d19aa3d68ec3d182ba1ee77e710b4fb967c2d
