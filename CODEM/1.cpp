@@ -20,7 +20,6 @@ using namespace std;
 #define mp(x,y) make_pair(x,y)
 typedef pair<int, int> PII;
 typedef long long ll;
-
 const int N = 1e6 + 5;
 int a[N];
 int b[N];
