@@ -8,6 +8,7 @@ int dp[N];
 int main()
 {
     int n,m;
+    int ka = 0;
     while(cin >> n >> m)
     {
         memset(dp,0,sizeof(dp));
@@ -31,6 +32,6 @@ int main()
                 dp[j] = max(dp[j],dp[j - w[i]] + v[i]);
             }
         }
-        cout << dp[m] << endl;
+        cout << "Case " << ++ ka << ":" << dp[m] << endl;
     }
 }
