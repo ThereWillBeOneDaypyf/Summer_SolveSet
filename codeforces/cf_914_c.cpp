@@ -47,8 +47,8 @@ namespace pro
         for(int i = 0;i <= up;i++)
             ret = ret + dfs(s, pos + 1, ones + (i == 1), i,status && (i == up),k) % MOD;
         if(!status)
-            dp[pos][ones][pre] = ret;
-        return ret;
+            dp[pos][ones][pre] = ret % MOD;
+        return ret % MOD;
     }
     void solve()
     {
@@ -68,7 +68,7 @@ namespace pro
                 continue;
             }
             memset(dp, -1, sizeof(dp));
-            cout << dfs(s,0,0,0,true,k) << endl;
+            cout << dfs(s,0,0,0,true,k) % MOD << endl;
         }
     }
 }
