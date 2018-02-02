@@ -57,6 +57,11 @@ int main()
 			}
 		}
 		sort(ans.begin(), ans.end());
+		if (ans.size() == 0)
+		{
+			cout << "No Solution" << endl;
+			continue;
+		}
 		for (int i = 0; i != ans.size(); i ++)
 			cout << a[ans[i].first] << " " << a[ans[i].second.first] << " " << a[ans[i].second.second] << endl;
 	}
