@@ -1,74 +1,104 @@
 #include<iostream>
 #include<algorithm>
-#include<cstring>
 #include<cstdio>
+#include<vector>
+#include<cstring>
 using namespace std;
-
-//thanks to pyf ...
-//thanks to qhl ...
 
 const int N = 1e5 + 7;
 
 struct Tree
 {
-	int lt, rt, sum;
-} t[N * 40];
-int root[N];
+	int lt,rt; // next lson rson;
+	int sum;
+}t[N * 40];
+
 int cnt = 0;
-void cp(Tree &x, Tree y)
+
+void init_node(Tree &cp)
 {
-	x.lt = y.lt, x.rt = y.rt, x.sum = y.sum;
+	cp.lt = cp.rt = cp.sum = 0;
 }
-void update(int l, int r, int &x, int y, int k)
+
+void init()
+{
+	init_node(t[0]);
+	cnt = 0;
+}
+
+int new_son()
 {
 	cnt ++;
-	cp(t[cnt], t[y]);
-	t[cnt].sum ++;
-	x = cnt;
-	if (l == r)
-		return;
-	int mid = (l + r) / 2;
-	if (k <= mid)
-		update(l, mid, t[x].lt, t[y].lt, k);
-	else
-		update(mid + 1, r, t[x].rt, t[y].rt, k);
+	init_node(t[cnt]);
+	return cnt;
+}
+void cpy_node(Tree rhs,Tree &tar)
+{
+	tar.lt = rhs.lt,tar.rt = rhs.rt;
+	tar.sum = rhs.sum;
+}
 
-}
-int query(int l, int r, int lt, int rt, int k)
+int root[N];
+
+void push_up(int x)
 {
-	if (l == r)
-		return l;
-	int sum = t[t[rt].lt].sum - t[t[lt].lt].sum;
+	t[x].sum = t[t[x].lt].sum + t[t[x].rt].sum;
+}
+
+void update(int l,int r,int pos,int &x,int y)
+{
+	x = new_son();
+	cpy_node(t[y],t[x]);
+	if(l == r)
+	{
+		t[x].sum ++;
+		return;
+	}
 	int mid = (l + r) / 2;
-	if (sum >= k)
-		return query(l, mid, t[lt].lt, t[rt].lt, k);
-	else
-		return query(mid + 1, r, t[lt].rt, t[rt].rt, k - sum);
+	if(pos <= mid)
+		update(l,mid,pos ,t[x].lt,t[y].lt);
+	else update(mid + 1,r,pos,t[x].rt,t[y].rt);
+	push_up(x);
 }
-int a[N], v[N];
-int get_id(int x, int num)
+
+int query(int l,int r,int k,int x,int y)
 {
-	return lower_bound(v + 1, v + 1 + num, x) - v;
+	if(l == r)
+		return l;
+	int sum = t[t[y].lt].sum - t[t[x].lt].sum;
+	int mid = (l + r) /  2;
+	if(k <= sum)
+		return query(l,mid,k,t[x].lt,t[y].lt);
+	else
+		return query(mid + 1, r, k - sum, t[x].rt,t[y].rt);
+}
+int get_id(const vector<int> v,int tar)
+{
+	return lower_bound(v.begin(),v.end(),tar) - v.begin() + 1;
 }
 int main()
 {
-	int n, q;
-	while (scanf("%d%d", &n, &q) == 2)
+	int n,m;
+	while(scanf("%d%d",&n,&m) == 2)
 	{
-		for (int i = 1; i <= n; i++)
+		vector<int>v;
+		init();
+		for(int i = 0;i < n;i++)
 		{
-			scanf("%d", a + i);
-			v[i] = a[i];
+			int x;
+			scanf("%d",&x);
+			v.push_back(x);
 		}
-		sort(v + 1, v + 1 + n);
-		int num = unique(v + 1, v + n + 1) - v;
-		for (int i = 1; i <= n; i++)
-			update(1, n, root[i], root[i - 1], get_id(a[i], num));
-		for (int i = 0; i < q; i++)
+		vector<int> tar(v);
+		sort(v.begin(),v.end());
+		v.erase(unique(v.begin(),v.end()),v.end());
+		for(int i = 0;i < n;i++)
+			update(1,v.size(),get_id(v,tar[i]),root[i + 1],root[i]);
+		for(int i = 0;i < m;i++)
 		{
-			int x, y, z;
-			scanf("%d%d%d", &x, &y, &z);
-			printf("%d\n", v[query(1, n, root[x - 1], root[y], z)]);
+			int l,r,k;
+			scanf("%d%d%d",&l,&r,&k);
+			printf("%d\n",v[query(1,v.size(),k,root[l - 1],root[r]) - 1]);
 		}
 	}
 }
