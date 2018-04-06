@@ -35,6 +35,7 @@ bool get_ans()
 }
 int main()
 {
+	default_random_engine engine(time(nullptr));
 	while (cin >> n)
 	{
 		p.clear();
@@ -56,7 +57,7 @@ int main()
 			a[i] = i;
 		do
 		{
-			random_shuffle(p.begin(), p.end());
+			shuffle(p.begin(), p.end(),engine);
 			if (get_ans())
 			{
 				flag = 1;
