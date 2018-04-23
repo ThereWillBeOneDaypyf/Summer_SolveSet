@@ -1,19 +1,19 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-const int N = 1e6 + 7;
+const int N = 1500000;
 
-int vis[N];
+bool vis[N];
 vector<int> G[N];
-
+set<int> s;
 int main()
 {
   int n;
-  while(cin >> n)
+  while(scanf("%d",&n) == 1)
   {
+    s.clear();
     for(int i = 0;i < N;i ++)
       G[i].clear();
-    set<int> s;
     memset(vis,0,sizeof(vis));
     for(int i = 2;i < N;i++)
     {
@@ -32,7 +32,7 @@ int main()
     for(int i = 0;i < n;i ++)
     {
       int x;
-      cin >> x;
+      scanf("%d",&x);
       int cur = *s.begin();
       if(eq)
       {
@@ -40,8 +40,8 @@ int main()
         if(cur != x)
           eq = 0;
       }
-      cout << cur << " ";
-      for(auto temp : G[cur])
+      printf("%d ",cur);
+      for(int temp : G[cur])
       {
         for(int j = temp;j < N;j += temp)
         {
