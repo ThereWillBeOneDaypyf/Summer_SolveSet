@@ -50,7 +50,7 @@ void dfs(int u,int Fa,int d)
 			continue;
 		dfs(v,u,d+1);
 		sz[u] += sz[v];
-		if(bigson[u] == -1 || sz[v] > sz[bigsoni[u]])
+		if(bigson[u] == -1 || sz[v] > sz[bigson[u]])
 			bigson[u] = v;
 	}
 }
