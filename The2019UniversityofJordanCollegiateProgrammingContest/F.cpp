@@ -2,7 +2,7 @@
 using namespace std;
 
 const double PI = 3.1415926535;
-const double eps = 1e-6;
+const double eps = 1e-8;
 
 bool checkInView(int x,int y, int cx, int cy, int alpha, int cr)
 {
